@@ -3,7 +3,7 @@ require_relative './spec_helper.rb'
 describe "Genre" do
 
   it "can initialize a genre" do
-    Genre.new.should eq(true)
+    Genre.new.should be_an_instance_of(Genre)
   end
 
   it "has a name" do

@@ -3,7 +3,7 @@ require_relative './spec_helper'
 describe "Artist" do
 
   it "can be initialized" do
-    Artist.new.should eq(true)
+    Artist.new.should be_an_instance_of(Artist)
   end
 
   it "can have a name" do
