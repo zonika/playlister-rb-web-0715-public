@@ -1,6 +1,3 @@
-#require all lib/*.rb files
-Dir[File.join(File.dirname(__FILE__), "../lib", "*.rb")].each {|f| require f}
-
 RSpec.configure do |config|
   # Use color in STDOUT
   config.color_enabled = true
