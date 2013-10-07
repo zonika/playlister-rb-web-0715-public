@@ -39,7 +39,7 @@ describe "Artist" do
     let(:artist) { Artist.new }
 
     it "can have genres" do
-      song = song.new
+      song = Song.new
       song.genre = Genre.new.tap { |genre| genre.name = "rap" }
       artist.add_song song
       artist.genres.should include(song.genre)

@@ -25,7 +25,7 @@ describe "Genre" do
     genre = Genre.new
     genre.name = 'rap'
 
-    2.each do 
+    2.times do
       artist = Artist.new
       song = Song.new.tap { |s| s.genre = genre }
       artist.add_song(song)
