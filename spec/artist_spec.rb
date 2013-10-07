@@ -50,6 +50,7 @@ describe "Artist" do
   describe "Class methods" do
 
     before(:each) do
+      Artist.reset_artists
       @artist = Artist.new
     end
 
@@ -58,11 +59,10 @@ describe "Artist" do
     end
 
     it "can count how many artists have been created" do
-      Artist.count.should eq(0)
+      Artist.count.should eq(1)
     end
 
     it "can reset the artists that have been created" do
-      Artist.reset_artists.should eq(true)
       Artist.count.should eq(0)
     end
 
