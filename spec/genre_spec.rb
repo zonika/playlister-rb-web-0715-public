@@ -57,7 +57,7 @@ describe "Genre" do
     end
 
     it "can reset genres" do
-      genres = [1..5].collect do |i|
+      genres = 5.times do |i|
         Genre.new
       end
       Genre.count.should eq(5)
