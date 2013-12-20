@@ -1,4 +1,9 @@
-###Playlister
+---
+  tags: oop, domain, tdd
+  languages: ruby
+---
+
+#Playlister
 
 **Part 1**
 
