@@ -63,6 +63,7 @@ describe "Artist" do
     end
 
     it "can reset the artists that have been created" do
+      Artist.reset_artists
       Artist.count.should eq(0)
     end
 

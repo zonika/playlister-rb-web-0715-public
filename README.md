@@ -3,7 +3,7 @@
   languages: ruby
 ---
 
-#Playlister
+# Playlister
 
 **Part 1**
 
@@ -17,4 +17,3 @@ These files should be placed within a lib directory.
 3) Implement the pending tests and make them pass.
   
 To run all tests, type `rspec spec.rb` from the project root directory.
-
