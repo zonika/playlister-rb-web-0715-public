@@ -1,3 +1,5 @@
+# Playlister Tutorial
+
 Before I even get started trying to make the specs pass, I want to get my environment all set up. Since I see that there are three spec files that each check a particular class, I want to make sure I have the .rb files set up for all three classes. I already have an `artist.rb` file, so I'm going to go ahead and make `genre.rb` and `song.rb` files and put them in the `lib` directory. This is a convenient place for us to keep all of our models.
 
 The next thing I want to do is make sure all my files are getting included correctly. I have this convenient `spec/spec_helper.rb` file which will get run when my specs are run, so it'll be a good idea to get everything required at the top of that file.
