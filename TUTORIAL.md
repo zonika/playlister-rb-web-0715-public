@@ -301,3 +301,575 @@ end
 That seems like it could do the trick. Since I'm telling the artist about a song (I'm passing it into its add_song method), the artist can now "ask" that song about its genre. Luckily, I have that attr_accessor for genre on the Song class.
 
 Let's run the test suite and see if this works.
+
+And it does. Nice! Let's take a look at the next failure message:
+
+`undefined method 'reset_artists' for Artist:Class`
+
+I can glean two things from this message: first, I need to have a class method that resets the Artists, and second, I apparently need some way of keeping track of all of the Artist instances.
+
+Let's take care of the second of those first.
+
+So I know I want to keep track of every instance of an Artist, but when might I do that? Well, there are only a few moments in the life of an object that I can really do things. One of those moments is when it is instantiated. Maybe, then, I'll want to keep track of a new Artist as soon as it is created.
+
+I can put something in the initialize method to do that.
+
+First, let's create a class variable to keep track of all the Artists. Remember, class variables are variables that are available class wide.
+
+```ruby
+# lib/artist.rb
+class Artist
+
+  attr_accessor :name, :songs, :genres
+
+  @@artists = []
+
+  def initialize
+    @songs = []
+    @genres = []
+  end
+
+  # ...
+
+end
+```
+
+And now, let's modify our initialize method so that whenever a new Artist is instantiated, it adds itself to that array we just made.
+
+```ruby
+# lib/artist.rb
+class Artist
+
+  attr_accessor :name, :songs, :genres
+
+  @@artists = []
+
+  def initialize
+    @songs = []
+    @genres = []
+    @@artists << self
+  end
+
+  # ...
+
+end
+```
+
+Now let's tackle that `reset_artists` class method. First, let's go ahead and define it. Remember, class methods are defined a bit differently...they begin with `self.`:
+
+```ruby
+# Defining a class method
+
+def self.method_name
+end
+```
+
+What does this method need to do? Well, we're keeping track of all the Artist instances in an array. So if we empty that array, we've essentially reset our list of Artists. Add this method to the Artist class:
+
+```ruby
+# lib/artist.rb
+
+class Artist
+
+  # ...
+
+  def self.reset_artists
+    # we could do something like @@artist = [], but we can also use this handy
+    # array method instead that empties the array for us
+
+    @@artist.clear
+  end
+
+end
+```
+
+If we run the specs again, that test passes, and we get a new failure message:
+
+`undefined method 'all' for Artist:Class`
+
+This seems pretty straight forward to fix. We need a class method (`self.all`) that will return that `@@artists` array that we created for the last test.
+
+```ruby
+# lib/artist.rb
+
+class Artist
+
+  # ...
+
+  def self.all
+    @@artists
+  end
+
+end
+```
+
+Now this next failure message is an interesting one. It tells us that we don't have a `count` method for our Artist class. It seems like we might have to do something fancy to figure out how many Artists have been instantiated, right?
+
+Nope! Since we just created this awesome method (it's basically a class-level attr_reader!) that returns an array of all of our Artists, we just need to use the familiar `Array.count` method we know and love! Easy as pie.
+
+```ruby
+# lib/artist.rb
+
+class Artist
+
+  # ...
+
+  def self.count
+    self.all.count
+  end
+
+end
+```
+
+We could have just as easily done `@@artists.all.count`, but it's generally more common to call our methods that return values instead. (Why might this be the case? Hint: it has something to do with what might happen if you want to rename a variable later on down the road.)
+
+And now we're back to a familiar failure message!
+
+`undefined method 'songs' for #<Genre:0x...>`
+
+Let's go ahead and add that attr_accessor:
+
+```ruby
+# lib/genre.rb
+class Genre
+
+  attr_accessor :name, :songs
+
+  # ...
+
+end
+```
+
+Look...it's that weird `undefined method `count' for nil:NilClass` failure message again! Let's take a look at the failing test to see what's up. This is from line 21 in `spec/genre_spec.rb`:
+
+```ruby
+it "has many songs" do
+  genre = Genre.new.tap { |g| g.name = 'rap' }
+  3.times do
+    song = Song.new
+    song.genre = genre
+  end
+  genre.songs.count.should eq(3)
+end
+```
+
+This looks really similar to the `add_song` issue we had earlier. But wait...there's no `add_song` method here on the Genre class. Where in the world can a song be getting added to a genre? The first line of the test is just some set up, so it can't be there. The `3.times do` line isn't important to us. The `Song.new` line seems benign as well. So we're left with:
+
+`song.genre = genre`
+
+Huh? So this test is telling me that somehow, when I call `song.genre = genre`, `genre` is also becomming aware of the song it was added to?
+
+Do you know what that means? I need to make some more magic happen when that line is called.
+
+Now, it may not seem like it, but `song.genre = genre` is actually, as we know, syntactic sugar for this:
+
+`song.genre=(genre)`
+
+Which means, we're actually calling a method named `genre=`. Crazy, right? That's one of the methods we get for free when we create an `attr_accessor :genre` on the Song class. But since we need some more stuff to happen in that method, namely we need to let the assigned genre know about the song it was just added to, we need to overwrite that method.
+
+To our Song class, let's add:
+
+```ruby
+class Song
+
+  attr_accessor :genre
+
+  def genre=(genre)
+  end
+
+end
+```
+
+So what do we need this method to do? Well, remember what we did in our `add_song` method? We'll do the same kind of thing here. And, while we're at it, let's change that attr_accessor to an attr_reader, since we're manually writing the writer:
+
+```ruby
+class Song
+
+  attr_reader :genre
+
+  def genre=(genre)
+    # first, we need to replicate what the attr_accessor was already doing for us:
+    # setting our instance variable
+
+    @genre = genre
+
+    # then, we want to add this instance of a song to the genre's collection
+    # of songs
+
+    genre.songs << self
+
+  end
+
+end
+```
+
+Let's run the tests again to see where we are.
+
+Whoops! We forgot something important. It's something we forgot before. We need to initialize an empty array of songs in the Genre class on initialization of a new instance.
+
+```ruby
+class Genre
+
+  attr_accessor :name, :songs
+
+  def initialize
+    @songs = []
+  end
+
+end
+```
+
+Ok, now we're getting somewhere! Let's see what the next failure message is, and check out that line in the test suite:
+
+`undefined method `artists' for #<Genre:0x0...>`
+
+And from line 34 in `spec/genre_spec.rb`:
+
+```ruby
+it "has many artists" do
+  genre = Genre.new
+  genre.name = 'rap'
+
+  2.times do
+    artist = Artist.new
+    song = Song.new.tap { |s| s.genre = genre }
+    artist.add_song(song)
+  end
+
+  genre.artists.count.should eq(2)
+end
+```
+
+Ok. We've got this. First things first. Before even diving into the test, we know from the failure message that we probably need an attr_accessor for artists on the Genre class. And as we've done multiple times now, we should probably go ahead and initialize an empty array for that instance variable as well.
+
+```ruby
+class Genre
+
+  attr_accessor :name, :songs, :artists
+
+  def initialize
+    @songs = []
+    @artists = []
+  end
+
+end
+```
+
+Nice. That got us to a different failure message. This time, it says:
+
+```bash
+Failure/Error: genre.artists.count.should eq(2)
+       
+   expected: 2
+        got: 0
+```
+
+Let's look back at that test again:
+
+```ruby
+it "has many artists" do
+  genre = Genre.new
+  genre.name = 'rap'
+
+  2.times do
+    artist = Artist.new
+    song = Song.new.tap { |s| s.genre = genre }
+    artist.add_song(song)
+  end
+
+  genre.artists.count.should eq(2)
+end
+```
+
+It looks like our genre isn't being made aware of the artists it has. So where in this test might that be happening? Let's skip the first few lines, as those just look like setup. In fact, I'm seeing a pretty similar pattern here. There's a bunch of setup, then this `add_song` method is called, and then magically, the test is expecting the genre to know about some new artists.
+
+This *must* mean that within that add_song method, the genre is learning about its artists. In other words, a genre is being informed about its artists through those artists songs. We're going to have to add some code to the add_song method. In `lib/artist.rb`:
+
+```ruby
+# lib/artist.rb
+class Artist
+
+  # ...
+
+  def add_song(song)
+    self.songs << song
+    self.genres << song.genre
+
+    # the genre is learning about this artist through the song
+    song.genre.artists << self
+  end
+
+  # ...
+
+end
+```
+
+Nice, that made the test pass! But, boo! An earlier test has started failing again. What?
+
+```bash
+1) Artist with songs can have a song added
+   Failure/Error: artist.add_song(song)
+   NoMethodError:
+    undefined method `artists' for nil:NilClass
+   # ./lib/artist.rb:16:in `add_song'
+   # ./spec/artist_spec.rb:26:in `block (3 levels) in <top (required)>'
+```
+
+Well that's weird. Let's take a look at line 26 in `spec/artist_spec.rb`:
+
+```ruby
+it "can have a song added" do
+  artist.add_song(song)
+  artist.songs.should include(song)
+end
+```
+
+And what's changed since we made that test pass earlier? Well, that line of code we just added, of course!
+
+`song.genre.artists << self`
+
+And we're getting an error that says `undefined method 'artists' for nil:NilClass`. Hmm, that must mean that `song.genre` is evaluating to nil for some reason.
+
+Aha! Look at the setup before this failing test:
+
+```ruby
+describe "with songs" do
+
+    let(:artist) { Artist.new }
+    let(:song) { Song.new }
+
+    it "has songs" do
+      artist.songs = []
+      artist.songs.should eq([])
+    end
+
+    it "can have a song added" do
+      artist.add_song(song)
+      artist.songs.should include(song)
+    end
+
+# ...
+```
+
+The song we're using to test with has no genre assigned to it! We should probably account for that in our code. So let's alter the `add_song` method slightly to account for the case when a song exists without a genre attached to it. All we need to do is check to see that `song.genre` actually exists. If it does, all's good and we can go ahead and add the artist to that genre's list of artists. If no genre exists, we just won't do that step:
+
+```ruby
+# lib/artist.rb
+
+class Artist
+
+  # ...
+
+  def add_song(song)
+    self.songs << song
+    self.genres << song.genre
+    song.genre.artists << self if song.genre
+  end
+
+  # ...
+
+end
+```
+
+There we go! That old test is passing again. The next failing test is the one that checks to make sure each genre keeps only unique artists. This makes sense from a usability standpoint. An artist generally does their thing in one or two genres, and it'd be really annoying to, say, list the same artist once for each of their songs when calling `genre.artists`. Aside from checking to see if a song has a genre now, we also need to check and see if a given artist already exists in a genre's collection of artists before adding to it.
+
+```ruby
+# lib/artist.rb
+
+class Artist
+
+  # ...
+
+  def add_song(song)
+    self.songs << song
+    self.genres << song.genre
+    song.genre.artists << self if song.genre && !song.genre.artists.include?(self)
+  end
+
+  # ...
+
+end
+```
+
+Let's see, let's see. What's next? Oh, another one of those reset methods. This time, it's on the Genre class. We'll do exactly what we did with the Artist class:
+
+```ruby
+# lib/genre.rb
+class Genre
+
+  attr_accessor :name, :songs, :artists
+
+  @@genres = []
+
+  def initialize
+    @songs = []
+    @artists = []
+    @@genres << self
+  end
+
+  def self.reset_genres
+    @@genres.clear
+  end
+
+end
+```
+
+And the next failure message says we need to write that `self.count` method as well:
+
+```ruby
+# lib/genre.rb
+class Genre
+
+  # ...
+
+  def self.count
+    # We should probably write a method that returns @@genres
+    @@genres.count
+  end
+
+end
+```
+
+And, yay! The next failure message tells us that, indeed, we need to write a method that returns @@genres:
+
+```ruby
+# lib/genre.rb
+class Genre
+
+  # ...
+
+  def self.count
+    self.all.count
+  end
+
+  def self.all
+    @@genres
+  end
+
+end
+```
+
+Would you look at that?! All of our specs pass now! But what's this pending business? If we open up `spec/song_spec.rb` it looks like we need to write some tests ourselves. Luckily, these should follow the pattern we've been dealing with this whole time.
+
+Let's look at the first one:
+
+```ruby
+# spec/song_spec.rb
+
+it "can initialize a song" do
+  pending #implement this spec
+end
+```
+
+Well, I kind of remember seeing one really, really similar to that pass very early on. And looking back in my terminal, I see that indeed, the first test in artist_spec was almost identical. So let's copy that test and make it work here:
+
+```ruby
+# spec/artist_spec.rb
+
+it "can be initialized" do
+  expect(Artist.new).to be_an_instance_of(Artist)
+end
+```
+
+This seems easy enough. In `spec/song_spec.rb` lets write this:
+
+```ruby
+# spec/song_spec.rb
+
+it "can initialize a song" do
+  expect(Song.new).to be_an_instance_of(Song)
+end
+```
+
+This second test looks familiar too. Let's copy the second test from `spec/artist_spec.rb` and alter it:
+
+```ruby
+# spec/song_spec.rb
+
+# ...
+
+it "can have a name" do
+  song = Song.new
+  song.name = "Yellow Submarine"
+  expect(song.name).to eq("Yellow Submarine")
+end
+```
+
+Whoa! Look at that! That test we just wrote failed! Guess we never added an attr_accessor for name. Let's do that now:
+
+```ruby
+# lib/song.rb
+class Song
+
+  attr_reader :genre
+  attr_accessor :name
+
+  # ...
+
+end
+```
+
+Crisis averted. Ok, let's write the next test. We want to test that a song can have a genre:
+
+```ruby
+# spec/song_spec.rb
+
+# ...
+
+it "can have a genre" do
+  song = Song.new
+  genre = Genre.new.tap { |genre| genre.name = "blues" }
+  song.genre = genre
+  expect(song.genre.name).to eq("blues")
+end
+
+And finally, our last test! It can have an artist. Let's test this using our `add_song` method on the Artist class to make sure that method works properly (even though, technically, it's already being tested):
+
+```ruby
+# spec/song_spec.rb
+
+# ...
+
+it "has an artist" do
+  artist = Artist.new.tap { |artist| artist.name = "Amos Lee" }
+  song = Song.new.tap { |song| song.name = "Sweet Pea" }
+  artist.add_song(song)
+  expect(song.artist).to eq(artist)
+end
+```
+
+And that one fails. We don't have an attr_accessor for artist either! Let's add it:
+
+```ruby
+# lib/song.rb
+class Song
+
+  attr_reader :genre
+  attr_accessor :name, :artist
+
+  # ...
+
+end
+```
+
+Interesting. The test still fails. And you know what? It looks like it's because we're never actually telling the song about its artist when it's added using the `add_song` method! Looks like that method has one more job:
+
+```ruby
+# lib/artist.rb
+class Artist
+
+  # ...
+
+  def add_song(song)
+    self.songs << song
+    song.artist = self
+    self.genres << song.genre
+    song.genre.artists << self if song.genre && !song.genre.artists.include?(self)
+  end
+
+  # ...
+
+end
+```
+
+And there we go! We have successfully created Artist, Genre, and Song classes that interact with one another, tested those interactions, and even extended our test suite by writing tests of our own.
