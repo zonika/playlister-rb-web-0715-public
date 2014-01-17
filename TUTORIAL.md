@@ -822,6 +822,7 @@ it "can have a genre" do
   song.genre = genre
   expect(song.genre.name).to eq("blues")
 end
+```
 
 And finally, our last test! It can have an artist. Let's test this using our `add_song` method on the Artist class to make sure that method works properly (even though, technically, it's already being tested):
 
