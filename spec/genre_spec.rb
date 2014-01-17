@@ -3,13 +3,13 @@ require_relative './spec_helper.rb'
 describe "Genre" do
 
   it "can initialize a genre" do
-    Genre.new.should be_an_instance_of(Genre)
+    expect(Genre.new).to be_an_instance_of(Genre)
   end
 
   it "has a name" do
     genre = Genre.new
     genre.name = 'rap'
-    genre.name.should eq('rap')
+    expect(genre.name).to eq('rap')
   end
 
   it "has many songs" do
@@ -18,7 +18,7 @@ describe "Genre" do
       song = Song.new
       song.genre = genre
     end
-    genre.songs.count.should eq(3)
+    genre.songs.count.to eq(3)
   end
 
   it "has many artists" do
@@ -31,7 +31,7 @@ describe "Genre" do
       artist.add_song(song)
     end
 
-    genre.artists.count.should eq(2)
+    expect(genre.artists.count).to eq(2)
   end
 
   it "keeps unique artists" do
@@ -43,7 +43,7 @@ describe "Genre" do
       song.genre = genre
       artist.add_song(song)
     end
-    genre.artists.count.should eq(1)
+    expect(genre.artists.count).to eq(1)
   end
 
   describe "Class methods" do
@@ -53,21 +53,21 @@ describe "Genre" do
     end
 
     it "keeps track of all known genres" do
-      Genre.count.should eq(0)
+      expect(Genre.count).to eq(0)
       rap = Genre.new.tap{|g| g.name = 'rap'}
       electronica = Genre.new.tap{|g| g.name = 'electronica'}
-      Genre.count.should eq(2)
-      Genre.all.should include(rap)
-      Genre.genres.should include(electronica)
+      expect(Genre.count).to eq(2)
+      expect(Genre.all).to include(rap)
+      expect(Genre.all).to include(electronica)
     end
 
     it "can reset genres" do
       5.times do
         Genre.new
       end
-      Genre.count.should eq(5)
+      expect(Genre.count).to eq(5)
       Genre.reset_genres
-      Genre.count.should eq(0)
+      expect(Genre.count).to eq(0)
     end
 
   end
