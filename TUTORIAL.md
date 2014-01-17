@@ -154,7 +154,7 @@ class Artist
 end
 ```
 
-In my initialize method, I need to set up my `@songs` instance variable. And I'm thinking I should probably set it equal to an empty array. I'm assuming this is the way to go because the variable is plural, and generally that indicates a collection of things. An array is a great way to keep track of a collection. I also think this is the case because that `include?` method from my test failure message is a method I'm used to see being called on an array.
+In my initialize method, I need to set up my `@songs` instance variable. And I'm thinking I should probably set it equal to an empty array. I'm assuming this is the way to go because the variable is plural, and generally that indicates a collection of things. And after all, doesn't an artist have many songs? And many of something is an array, a collection. It's important to continue thinking in metaphors, they are called Models because they are models of something real and should behave like the real thing. An array is a great way to keep track of a collection. I also think this is the case because that `include?` method from my test failure message is a method I'm used to see being called on an array.
 
 ```ruby
 class Artist
