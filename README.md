@@ -3,17 +3,16 @@
   languages: ruby
 ---
 
-# Playlister
+# Playlister, Part I
 
-**Part 1**
+### Skills: Object Oriented Programming, Test Driven Development
 
-Fork this repository, clone it to your computer, and make the rspec tests pass.
+## Instructions
 
-1) Create a Class for song, artist, and genre. Use an individual file for each class.
-These files should be placed within a lib directory.
+Fork this repository, clone it, and make the RSpec tests pass.
 
-2) Implement the code that makes all of the RSpec specs in the spec directory pass. Don't forget to include any necessary files.
+1. Create a Class for `song`, `artist`, and `genre`. Use an individual file for each class. These files should be placed within a `lib` directory.
 
-3) Implement the pending tests and make them pass.
-  
-To run all tests, type `rspec spec.rb` from the project root directory.
+2. Implement the code that makes all of the RSpec tests in the `spec` directory pass. Don't forget to include any necessary files!
+
+3. Implement the pending tests (in `spec/song_spec.rb`) and make them pass too.
