@@ -86,7 +86,6 @@ Boom! It passes. And the next error tells me that I don't have a `song=` method.
 
 ```ruby
 class Artist
-
   attr_accessor :name, :songs
 
 end
