@@ -18,7 +18,7 @@ describe "Genre" do
       song = Song.new
       song.genre = genre
     end
-    genre.songs.count.to eq(3)
+    expect(genre.songs.count).to eq(3)
   end
 
   it "has many artists" do
