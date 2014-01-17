@@ -71,10 +71,12 @@ attr_accessor :name
 to the top of my Artist class, I'm getting the following two methods for free:
 
 ```ruby
-def name=
+def name=(name)
+  @name = name
 end
 
 def name
+  @name
 end
 ```
 
