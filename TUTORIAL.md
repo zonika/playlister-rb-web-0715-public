@@ -435,7 +435,6 @@ Let's go ahead and add that attr_accessor:
 ```ruby
 # lib/genre.rb
 class Genre
-
   attr_accessor :name, :songs
 
   # ...
@@ -474,7 +473,6 @@ To our Song class, let's add:
 
 ```ruby
 class Song
-
   attr_accessor :genre
 
   def genre=(genre)
@@ -487,22 +485,17 @@ So what do we need this method to do? Well, remember what we did in our `add_son
 
 ```ruby
 class Song
-
   attr_reader :genre
 
   def genre=(genre)
     # first, we need to replicate what the attr_accessor was already doing for us:
     # setting our instance variable
-
     @genre = genre
 
     # then, we want to add this instance of a song to the genre's collection
     # of songs
-
     genre.songs << self
-
   end
-
 end
 ```
 
@@ -512,7 +505,6 @@ Whoops! We forgot something important. It's something we forgot before. We need 
 
 ```ruby
 class Genre
-
   attr_accessor :name, :songs
 
   def initialize
