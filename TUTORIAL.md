@@ -184,6 +184,8 @@ def add_song(song)
 end
 ```
 
+Run the test suite again (get used to running it early and often, basically with every change of code).
+
 Nice! That made the test pass. And I see another familiar error. Time to make a Genre class!
 
 ```ruby
@@ -202,6 +204,8 @@ class Genre
 
 end
 ```
+
+<!-- This part needs way more exposition, what was the error message, what test are we working on... -->
 
 Oh, look at that. It seems my Song class also needs to be aware of Genres. So I'll need to add an attr_accessor for genre there too:
 
