@@ -105,7 +105,6 @@ Ok, now I get an error that there is an undefined method called `add_song` for m
 ```ruby
 # lib/artist.rb
 class Artist
-
   attr_accessor :name, :songs
 
   def add_song
@@ -142,7 +141,6 @@ Let's add that to my artist.
 
 ```ruby
 class Artist
-
   attr_accessor :name, :songs
 
   def initialize
@@ -158,7 +156,6 @@ In my initialize method, I need to set up my `@songs` instance variable. And I'm
 
 ```ruby
 class Artist
-
   attr_accessor :name, :songs
 
   def initialize
@@ -201,7 +198,6 @@ Oops, guess I need an attr_accessor too:
 ```ruby
 # lib/genre.rb
 class Genre
-
   attr_accessor :name
 
 end
@@ -212,7 +208,6 @@ Oh, look at that. It seems my Song class also needs to be aware of Genres. So I'
 ```ruby
 # lib/song.rb
 class Song
-
   attr_accessor :genre
 
 end
@@ -223,7 +218,6 @@ And it looks like I'll need to add the same for my Artist class as well:
 ```ruby
 # lib/artist.rb
 class Artist
-
   attr_accessor :name, :songs, :genres
 
   # ...
@@ -236,7 +230,6 @@ Aha! This weird `undefined method 'include?' for nil:NilClass`. I know what that
 ```ruby
 # lib/artist.rb
 class Artist
-
   attr_accessor :name, :songs, :genres
 
   def initialize
@@ -254,7 +247,6 @@ Here's the test that's failing (from line 41 in `spec/artist_spec.rb`):
 
 ```ruby
 describe "with genres" do
-
   let(:artist) { Artist.new }
 
   it "can have genres" do
@@ -322,7 +314,6 @@ First, let's create a class variable to keep track of all the Artists. Remember,
 ```ruby
 # lib/artist.rb
 class Artist
-
   attr_accessor :name, :songs, :genres
 
   @@artists = []
@@ -342,7 +333,6 @@ And now, let's modify our initialize method so that whenever a new Artist is ins
 ```ruby
 # lib/artist.rb
 class Artist
-
   attr_accessor :name, :songs, :genres
 
   @@artists = []
@@ -539,7 +529,6 @@ Ok. We've got this. First things first. Before even diving into the test, we kno
 
 ```ruby
 class Genre
-
   attr_accessor :name, :songs, :artists
 
   def initialize
@@ -629,7 +618,6 @@ Aha! Look at the setup before this failing test:
 
 ```ruby
 describe "with songs" do
-
     let(:artist) { Artist.new }
     let(:song) { Song.new }
 
@@ -691,7 +679,6 @@ Let's see, let's see. What's next? Oh, another one of those reset methods. This 
 ```ruby
 # lib/genre.rb
 class Genre
-
   attr_accessor :name, :songs, :artists
 
   @@genres = []
@@ -795,7 +782,6 @@ Whoa! Look at that! That test we just wrote failed! Guess we never added an attr
 ```ruby
 # lib/song.rb
 class Song
-
   attr_reader :genre
   attr_accessor :name
 
@@ -839,7 +825,6 @@ And that one fails. We don't have an attr_accessor for artist either! Let's add 
 ```ruby
 # lib/song.rb
 class Song
-
   attr_reader :genre
   attr_accessor :name, :artist
 
