@@ -320,7 +320,7 @@ First, let's create a class variable to keep track of all the Artists. Remember,
 class Artist
   attr_accessor :name, :songs, :genres
 
-  @@artists = []
+  ARTISTS = []
 
   def initialize
     @songs = []
@@ -339,12 +339,12 @@ And now, let's modify our initialize method so that whenever a new Artist is ins
 class Artist
   attr_accessor :name, :songs, :genres
 
-  @@artists = []
+  ARTISTS = []
 
   def initialize
     @songs = []
     @genres = []
-    @@artists << self
+    ARTISTS << self
   end
 
   # ...
@@ -371,10 +371,10 @@ class Artist
   # ...
 
   def self.reset_artists
-    # we could do something like @@artist = [], but we can also use this handy
+    # we could do something like ARTIST = [], but we can also use this handy
     # array method instead that empties the array for us
 
-    @@artist.clear
+    ARTIST.clear
   end
 
 end
@@ -384,7 +384,7 @@ If we run the specs again, that test passes, and we get a new failure message:
 
 `undefined method 'all' for Artist:Class`
 
-This seems pretty straight forward to fix. We need a class method (`self.all`) that will return that `@@artists` array that we created for the last test.
+This seems pretty straight forward to fix. We need a class method (`self.all`) that will return that `ARTISTS` array that we created for the last test.
 
 ```ruby
 # lib/artist.rb
@@ -394,7 +394,7 @@ class Artist
   # ...
 
   def self.all
-    @@artists
+    ARTISTS
   end
 
 end
@@ -418,7 +418,7 @@ class Artist
 end
 ```
 
-We could have just as easily done `@@artists.all.count`, but it's generally more common to call our methods that return values instead. (Why might this be the case? Hint: it has something to do with what might happen if you want to rename a variable later on down the road.)
+We could have just as easily done `ARTISTS.all.count`, but it's generally more common to call our methods that return values instead. (Why might this be the case? Hint: it has something to do with what might happen if you want to rename a variable later on down the road.)
 
 And now we're back to a familiar failure message!
 
@@ -685,16 +685,16 @@ Let's see, let's see. What's next? Oh, another one of those reset methods. This 
 class Genre
   attr_accessor :name, :songs, :artists
 
-  @@genres = []
+  GENRES = []
 
   def initialize
     @songs = []
     @artists = []
-    @@genres << self
+    GENRES << self
   end
 
   def self.reset_genres
-    @@genres.clear
+    GENRES.clear
   end
 
 end
@@ -709,14 +709,14 @@ class Genre
   # ...
 
   def self.count
-    # We should probably write a method that returns @@genres
-    @@genres.count
+    # We should probably write a method that returns GENRES
+    GENRES.count
   end
 
 end
 ```
 
-And, yay! The next failure message tells us that, indeed, we need to write a method that returns @@genres:
+And, yay! The next failure message tells us that, indeed, we need to write a method that returns GENRES:
 
 ```ruby
 # lib/genre.rb
@@ -729,7 +729,7 @@ class Genre
   end
 
   def self.all
-    @@genres
+    GENRES
   end
 
 end
