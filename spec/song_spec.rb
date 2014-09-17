@@ -1,5 +1,3 @@
-require_relative './spec_helper.rb'
-
 describe "Song" do
   it "can initialize a song" do
     pending #implement this spec
