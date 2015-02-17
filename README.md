@@ -18,5 +18,9 @@ Fork this repository, clone it, and make the RSpec tests pass.
 
 3. Implement the pending tests (in `spec/song_spec.rb`) and make them pass too.
 
+## Note
+
+When writing and calling the '#genre=(genre)' method for the Song class, keep in mind that the object being passed in is an entire Genre object, not a String representation of the Genre. For example, `#<Genre:0x007fbdca31ed88 @name="rap">`, not `'Rap'`. The same can be applied to all other classes and assignment methods.
+
 ## Resources
 * [Practical Object-Oriented Design in Ruby](http://books.flatironschool.com/books/102) - [Chapter 2: Designing Classes with a Single Responsibility 15](http://books.flatironschool.com/books/102), page 40
