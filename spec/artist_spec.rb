@@ -52,6 +52,11 @@ describe "Artist" do
       @artist = Artist.new
     end
 
+    it "can reset all artists that have been created" do
+      Artist.reset_artists
+      expect(Artist.all).to be_empty
+    end
+
     it "keeps track of the artists that have been created" do
       expect(Artist.all).to include(@artist)
     end

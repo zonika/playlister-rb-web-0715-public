@@ -50,6 +50,12 @@ describe "Genre" do
       Genre.reset_genres
     end
 
+    it "can reset all genres that have been created" do 
+      Genre.new
+      Genre.reset_genres
+      expect(Genre.all).to be_empty
+    end
+
     it "keeps track of all known genres" do
       expect(Genre.count).to eq(0)
       rap = Genre.new.tap{|g| g.name = 'rap'}
