@@ -46,14 +46,14 @@ describe "Genre" do
 
   describe "Class methods" do
 
-    before(:each) do
-      Genre.reset_genres
-    end
-
     it "can reset all genres that have been created" do 
       Genre.new
       Genre.reset_genres
       expect(Genre.all).to be_empty
+    end
+
+    before(:each) do
+      Genre.reset_genres
     end
 
     it "keeps track of all known genres" do

@@ -47,14 +47,14 @@ describe "Artist" do
 
   describe "Class methods" do
 
-    before(:each) do
-      Artist.reset_artists
-      @artist = Artist.new
-    end
-
     it "can reset all artists that have been created" do
       Artist.reset_artists
       expect(Artist.all).to be_empty
+    end
+    
+    before(:each) do
+      Artist.reset_artists
+      @artist = Artist.new
     end
 
     it "keeps track of the artists that have been created" do
