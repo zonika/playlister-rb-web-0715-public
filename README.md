@@ -1,8 +1,4 @@
----
-  tags: oop, domain, tdd
-  languages: ruby
-  resources: 1
----
+
 
 # Playlister
 
